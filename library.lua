@@ -538,13 +538,13 @@ function Library:Tab(name, icon)
                 TextSize = 11,
                 Font = CFG.Font,
                 BackgroundTransparency = 1,
-                Size = UDim2.new(1, -2, 0, 15),
+                Size = UDim2.new(1, -7, 0, 15),
                 TextXAlignment = Enum.TextXAlignment.Right
             })
 
             local SliderBG = Create("Frame", {
                 Parent = Frame,
-                Size = UDim2.new(1, -2, 0, 6),
+                Size = UDim2.new(1, -7, 0, 6),
                 Position = UDim2.new(0, 0, 0, 20),
                 BackgroundColor3 = CFG.SecondaryColor,
                 BorderSizePixel = 0
