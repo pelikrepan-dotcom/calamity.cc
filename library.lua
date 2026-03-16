@@ -17,7 +17,7 @@ local CFG = {
     TextDark = Color3.fromRGB(120, 120, 120),
     StrokeColor = Color3.fromRGB(40, 40, 40),
     Font = Enum.Font.Code,
-    BaseSize = Vector2.new(660, 450)
+    BaseSize = Vector2.new(720, 450)
 }
 
 local Icons = {
@@ -217,7 +217,7 @@ local MainFrame = Create("Frame", {
     Name = "MainFrame",
     Parent = ScreenGui,
     Size = UDim2.fromOffset(CFG.BaseSize.X, CFG.BaseSize.Y),
-    Position = UDim2.new(0.5, -300, 0.5, -225),
+    Position = UDim2.new(0.5, -360, 0.5, -225),
     BackgroundColor3 = CFG.MainColor,
     BorderSizePixel = 0
 }, {
@@ -538,13 +538,13 @@ function Library:Tab(name, icon)
                 TextSize = 11,
                 Font = CFG.Font,
                 BackgroundTransparency = 1,
-                Size = UDim2.new(1, 0, 0, 15),
+                Size = UDim2.new(1, -2, 0, 15),
                 TextXAlignment = Enum.TextXAlignment.Right
             })
 
             local SliderBG = Create("Frame", {
                 Parent = Frame,
-                Size = UDim2.new(1, 0, 0, 6),
+                Size = UDim2.new(1, -2, 0, 6),
                 Position = UDim2.new(0, 0, 0, 20),
                 BackgroundColor3 = CFG.SecondaryColor,
                 BorderSizePixel = 0
@@ -668,6 +668,8 @@ function Library:Tab(name, icon)
                 Create("UICorner", {CornerRadius = UDim.new(0, 3)})
             })
 
+            local optionBtns = {}
+
             for _, opt in pairs(cfg.Options) do
                 local Btn = Create("TextButton", {
                     Parent = ListFrame,
@@ -678,7 +680,12 @@ function Library:Tab(name, icon)
                     TextSize = 11,
                     Font = CFG.Font
                 })
+                optionBtns[opt] = Btn
                 Btn.MouseButton1Click:Connect(function()
+                    for o, b in pairs(optionBtns) do
+                        b.TextColor3 = CFG.TextDark
+                    end
+                    Btn.TextColor3 = CFG.AccentColor
                     Current = opt
                     MainBox.Val.Text = opt
                     if cfg.Callback then cfg.Callback(opt) end
