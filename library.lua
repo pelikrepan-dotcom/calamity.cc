@@ -17,7 +17,7 @@ local CFG = {
     TextDark = Color3.fromRGB(120, 120, 120),
     StrokeColor = Color3.fromRGB(40, 40, 40),
     Font = Enum.Font.Code,
-    BaseSize = Vector2.new(600, 450)
+    BaseSize = Vector2.new(660, 450)
 }
 
 local Icons = {
@@ -1385,12 +1385,6 @@ function Library:Tab(name, icon)
                 Create("UIStroke", {Color = CFG.StrokeColor}),
                 Create("UICorner", {CornerRadius = UDim.new(0, 3)})
             })
-
-            Btn.MouseButton1Click:Connect(function()
-                if cfg.Callback then cfg.Callback() end
-            end)
-            if cfg.Tooltip then AddTooltip(Btn, cfg.Tooltip) end
-        end
 
             Btn.MouseButton1Click:Connect(function()
                 if cfg.Callback then cfg.Callback() end
