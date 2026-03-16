@@ -433,7 +433,7 @@ function Library:Tab(name, icon)
                 Position = UDim2.new(0, 8, 0, 0),
                 BackgroundTransparency = 1,
                 TextColor3 = CFG.TextColor,
-                Font = Enum.Font.GothamBold,
+                Font = CFG.Font,
                 TextSize = 11,
                 TextXAlignment = Enum.TextXAlignment.Left
             }),
@@ -1379,7 +1379,7 @@ function Library:Tab(name, icon)
                 BackgroundColor3 = CFG.SecondaryColor,
                 Text = cfg.Name,
                 TextColor3 = CFG.TextDark,
-                Font = Enum.Font.GothamBold,
+                Font = CFG.Font,
                 TextSize = 10
             }, {
                 Create("UIStroke", {Color = CFG.StrokeColor}),
