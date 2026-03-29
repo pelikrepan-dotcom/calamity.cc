@@ -363,7 +363,8 @@ function Library:Tab(name, icon)
         ScrollBarThickness = 2,
         ScrollBarImageColor3 = CFG.AccentColor,
         CanvasSize = UDim2.new(0, 0, 0, 0),
-        AutomaticCanvasSize = Enum.AutomaticSize.Y
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ScrollingDirection = Enum.ScrollingDirection.Y
     })
 
     PageFrame:ClearAllChildren()
@@ -453,7 +454,7 @@ function Library:Tab(name, icon)
             BackgroundTransparency = 1
         }, {
             Create("UIListLayout", {Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder}),
-            Create("UIPadding", {PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8)})
+            Create("UIPadding", {PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 13)})
         })
 
         local ItemFuncs = {}
@@ -538,13 +539,13 @@ function Library:Tab(name, icon)
                 TextSize = 11,
                 Font = CFG.Font,
                 BackgroundTransparency = 1,
-                Size = UDim2.new(1, -7, 0, 15),
+                Size = UDim2.new(1, 0, 0, 15),
                 TextXAlignment = Enum.TextXAlignment.Right
             })
 
             local SliderBG = Create("Frame", {
                 Parent = Frame,
-                Size = UDim2.new(1, -7, 0, 6),
+                Size = UDim2.new(1, 0, 0, 6),
                 Position = UDim2.new(0, 0, 0, 20),
                 BackgroundColor3 = CFG.SecondaryColor,
                 BorderSizePixel = 0
@@ -652,21 +653,28 @@ function Library:Tab(name, icon)
             })
 
             local ListFrame = Create("ScrollingFrame", {
-                Parent = MainBox,
-                Size = UDim2.new(1, 0, 0, 0),
-                Position = UDim2.new(0, 0, 1, 2),
+                Parent = ScreenGui,
+                Size = UDim2.fromOffset(0, 0),
                 BackgroundColor3 = CFG.SecondaryColor,
                 BorderSizePixel = 0,
                 Visible = false,
-                ZIndex = 50,
+                ZIndex = 999,
                 CanvasSize = UDim2.new(0, 0, 0, 0),
                 AutomaticCanvasSize = Enum.AutomaticSize.Y,
-                ScrollBarThickness = 2
+                ScrollBarThickness = 2,
+                ScrollingDirection = Enum.ScrollingDirection.Y
             }, {
                 Create("UIStroke", {Color = CFG.StrokeColor}),
                 Create("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder}),
                 Create("UICorner", {CornerRadius = UDim.new(0, 3)})
             })
+
+            local function UpdateDropdownPosition()
+                local absPos = MainBox.AbsolutePosition
+                local absSize = MainBox.AbsoluteSize
+                ListFrame.Position = UDim2.fromOffset(absPos.X, absPos.Y + absSize.Y + 2)
+                ListFrame.Size = UDim2.fromOffset(absSize.X, math.min(#cfg.Options * 20, 100))
+            end
 
             local optionBtns = {}
 
@@ -678,7 +686,8 @@ function Library:Tab(name, icon)
                     Text = opt,
                     TextColor3 = (opt == Current) and CFG.AccentColor or CFG.TextDark,
                     TextSize = 11,
-                    Font = CFG.Font
+                    Font = CFG.Font,
+                    ZIndex = 999
                 })
                 optionBtns[opt] = Btn
                 Btn.MouseButton1Click:Connect(function()
@@ -690,7 +699,7 @@ function Library:Tab(name, icon)
                     MainBox.Val.Text = opt
                     if cfg.Callback then cfg.Callback(opt) end
                     Expanded = false
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, 0)}, 0.1)
+                    Tween(ListFrame, {Size = UDim2.fromOffset(ListFrame.AbsoluteSize.X, 0)}, 0.1)
                     task.wait(0.1)
                     ListFrame.Visible = false
                 end)
@@ -699,10 +708,11 @@ function Library:Tab(name, icon)
             MainBox.MouseButton1Click:Connect(function()
                 Expanded = not Expanded
                 if Expanded then
+                    UpdateDropdownPosition()
                     ListFrame.Visible = true
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, math.min(#cfg.Options * 20, 100))}, 0.1)
+                    Tween(ListFrame, {Size = UDim2.fromOffset(MainBox.AbsoluteSize.X, math.min(#cfg.Options * 20, 100))}, 0.1)
                 else
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, 0)}, 0.1)
+                    Tween(ListFrame, {Size = UDim2.fromOffset(ListFrame.AbsoluteSize.X, 0)}, 0.1)
                     task.wait(0.1)
                     ListFrame.Visible = false
                 end
@@ -784,23 +794,28 @@ function Library:Tab(name, icon)
             local multiListMaxH = math.min(#cfg.Options * 22, 110)
 
             local ListFrame = Create("ScrollingFrame", {
-                Parent = MainBox,
-                Size = UDim2.new(1, 0, 0, 0),
-                Position = UDim2.new(0, 0, 1, 2),
+                Parent = ScreenGui,
+                Size = UDim2.fromOffset(0, 0),
                 BackgroundColor3 = CFG.SecondaryColor,
                 BorderSizePixel = 0,
                 Visible = false,
-                ZIndex = 50,
+                ZIndex = 999,
                 CanvasSize = UDim2.new(0, 0, 0, 0),
                 AutomaticCanvasSize = Enum.AutomaticSize.Y,
-                ScrollBarThickness = 2
+                ScrollBarThickness = 2,
+                ScrollingDirection = Enum.ScrollingDirection.Y
             }, {
                 Create("UIStroke", {Color = CFG.StrokeColor}),
                 Create("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder}),
                 Create("UICorner", {CornerRadius = UDim.new(0, 3)})
             })
 
-            local function RepositionMultiList() end
+            local function RepositionMultiList()
+                local absPos = MainBox.AbsolutePosition
+                local absSize = MainBox.AbsoluteSize
+                ListFrame.Position = UDim2.fromOffset(absPos.X, absPos.Y + absSize.Y + 2)
+                ListFrame.Size = UDim2.fromOffset(absSize.X, multiListMaxH)
+            end
 
             local OptionButtons = {}
 
@@ -875,10 +890,11 @@ function Library:Tab(name, icon)
                 Expanded = not Expanded
                 if Expanded then
                     multiListMaxH = math.min(#cfg.Options * 22, 110)
+                    RepositionMultiList()
                     ListFrame.Visible = true
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, multiListMaxH)}, 0.15)
+                    Tween(ListFrame, {Size = UDim2.fromOffset(MainBox.AbsoluteSize.X, multiListMaxH)}, 0.15)
                 else
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, 0)}, 0.1)
+                    Tween(ListFrame, {Size = UDim2.fromOffset(ListFrame.AbsoluteSize.X, 0)}, 0.1)
                     task.wait(0.1)
                     ListFrame.Visible = false
                 end
@@ -982,21 +998,28 @@ function Library:Tab(name, icon)
             })
 
             local ListFrame = Create("ScrollingFrame", {
-                Parent = MainBox,
-                Size = UDim2.new(1, 0, 0, 0),
-                Position = UDim2.new(0, 0, 1, 2),
+                Parent = ScreenGui,
+                Size = UDim2.fromOffset(0, 0),
                 BackgroundColor3 = CFG.SecondaryColor,
                 BorderSizePixel = 0,
                 Visible = false,
-                ZIndex = 50,
+                ZIndex = 999,
                 CanvasSize = UDim2.new(0, 0, 0, 0),
                 AutomaticCanvasSize = Enum.AutomaticSize.Y,
-                ScrollBarThickness = 2
+                ScrollBarThickness = 2,
+                ScrollingDirection = Enum.ScrollingDirection.Y
             }, {
                 Create("UIStroke", {Color = CFG.StrokeColor}),
                 Create("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder}),
                 Create("UICorner", {CornerRadius = UDim.new(0, 3)})
             })
+
+            local function RepositionPlayerList()
+                local absPos = MainBox.AbsolutePosition
+                local absSize = MainBox.AbsoluteSize
+                ListFrame.Position = UDim2.fromOffset(absPos.X, absPos.Y + absSize.Y + 2)
+                ListFrame.Size = UDim2.fromOffset(absSize.X, math.min(rowCount * 22, 110))
+            end
 
             local function AddRow(name)
                 if RowRefs[name] then return end
@@ -1060,7 +1083,8 @@ function Library:Tab(name, icon)
                 end)
 
                 if Expanded then
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, math.min(rowCount * 22, 110))}, 0.1)
+                    RepositionPlayerList()
+                    Tween(ListFrame, {Size = UDim2.fromOffset(MainBox.AbsoluteSize.X, math.min(rowCount * 22, 110))}, 0.1)
                 end
             end
 
@@ -1073,7 +1097,8 @@ function Library:Tab(name, icon)
                 SummaryLabel.Text = GetSummary()
                 FireCallback()
                 if Expanded then
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, math.min(rowCount * 22, 110))}, 0.1)
+                    RepositionPlayerList()
+                    Tween(ListFrame, {Size = UDim2.fromOffset(MainBox.AbsoluteSize.X, math.min(rowCount * 22, 110))}, 0.1)
                 end
             end
 
@@ -1096,10 +1121,11 @@ function Library:Tab(name, icon)
             MainBox.MouseButton1Click:Connect(function()
                 Expanded = not Expanded
                 if Expanded then
+                    RepositionPlayerList()
                     ListFrame.Visible = true
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, math.min(rowCount * 22, 110))}, 0.15)
+                    Tween(ListFrame, {Size = UDim2.fromOffset(MainBox.AbsoluteSize.X, math.min(rowCount * 22, 110))}, 0.15)
                 else
-                    Tween(ListFrame, {Size = UDim2.new(1, 0, 0, 0)}, 0.1)
+                    Tween(ListFrame, {Size = UDim2.fromOffset(ListFrame.AbsoluteSize.X, 0)}, 0.1)
                     task.wait(0.1)
                     ListFrame.Visible = false
                 end
