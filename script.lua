@@ -717,6 +717,7 @@ local combatTab   = window:tab({ name = "combat" })
 local movementTab = window:tab({ name = "movement" })
 local visualTab   = window:tab({ name = "visual" })
 local settingsTab = window:tab({ name = "settings" })
+local configTab   = window:tab({ name = "config" })
 
 local weaponList = {
     "[Double-Barrel SG]", "[TacticalShotgun]", "[Revolver]", "[Shotgun]",
@@ -1074,7 +1075,20 @@ do
         name = "enabled",
         flag = "hitbox_enabled",
         default = false,
-        callback = function(v) cfg.hitbox.enabled = v end,
+        callback = function(v)
+            cfg.hitbox.enabled = v
+            if not v then
+                for _, player in pairs(players:GetPlayers()) do
+                    if player ~= localplayer and player.Character then
+                        local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            hrp.Size = Vector3.new(2, 2, 1)
+                            hrp.Transparency = 1
+                        end
+                    end
+                end
+            end
+        end,
     })
 
     hitboxSection:slider({
@@ -1316,6 +1330,74 @@ do
         default = true,
         callback = function(v) cfg.settings.knife_check = v end,
     })
+end
+
+do
+    local cfgSection = configTab:section({ name = "configuration" })
+    local dir = "Calamity.Wtf/cfg/"
+
+    cfgSection:textbox({ flag = "config_name_input", placeholder = "config name" })
+
+    cfgSection:button({
+        name = "save",
+        callback = function()
+            local name = flags["config_name_input"]
+            if not name or name == "" then
+                library:notification({ text = "enter a config name" })
+                return
+            end
+            if not isfolder("Calamity.Wtf") then makefolder("Calamity.Wtf") end
+            if not isfolder("Calamity.Wtf/cfg") then makefolder("Calamity.Wtf/cfg") end
+            writefile(dir .. name .. ".cfg", library:get_config())
+            library:notification({ text = "saved: " .. name })
+            library:config_list_update()
+        end,
+    })
+
+    library.config_holder = cfgSection:dropdown({ name = "configs", items = {}, flag = "config_name_list" })
+
+    cfgSection:button({
+        name = "load",
+        callback = function()
+            local name = flags["config_name_list"]
+            if not name or name == "" then
+                library:notification({ text = "select a config first" })
+                return
+            end
+            library:load_config(readfile(dir .. name .. ".cfg"))
+            library:notification({ text = "loaded: " .. name })
+        end,
+    })
+
+    cfgSection:button({
+        name = "delete",
+        callback = function()
+            local name = flags["config_name_list"]
+            if not name or name == "" then
+                library:notification({ text = "select a config first" })
+                return
+            end
+            library:panel({
+                name = "delete " .. name .. "?",
+                options = { "Yes", "No" },
+                callback = function(opt)
+                    if opt == "Yes" then
+                        delfile(dir .. name .. ".cfg")
+                        library:notification({ text = "deleted: " .. name })
+                        library:config_list_update()
+                    end
+                end,
+            })
+        end,
+    })
+
+    pcall(function()
+        if not isfolder("Calamity.Wtf") then makefolder("Calamity.Wtf") end
+        if not isfolder("Calamity.Wtf/cfg") then makefolder("Calamity.Wtf/cfg") end
+    end)
+
+    library.directory = "Calamity.Wtf"
+    library:config_list_update()
 end
 
 combatTab.open_tab()
