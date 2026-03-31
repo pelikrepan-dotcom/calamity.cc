@@ -2191,7 +2191,7 @@ function library:window(properties)
 	--
 
 	function cfg.toggle_list(bool)
-		old_kblist.Visible = bool
+		old_kblist.Visible = false
 	end
 
 	function cfg.toggle_playerlist(bool)
@@ -2199,7 +2199,7 @@ function library:window(properties)
 	end
 
 	function cfg.toggle_watermark(bool)
-		__holder.Visible = bool
+		__holder.Visible = false
 	end
 
 	function cfg.set_menu_visibility(bool, pl)
