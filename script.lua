@@ -25,7 +25,7 @@ local o; o = hookfunction(getrenv().debug.info, newcclosure(function(...)
 end))
 setthreadidentity(7)
 
-library = loadstring(game:HttpGet("https://raw.githubusercontent.com/pelikrepan-dotcom/calamity.cc/refs/heads/main/true%20library.lua"))()
+library = loadstring(game:HttpGet("https://raw.githubusercontent.com/pelikrepan-dotcom/calamity.cc/main/ui.lua"))()
 
 local players = game:GetService("Players")
 local uis = game:GetService("UserInputService")
