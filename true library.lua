@@ -432,7 +432,6 @@ function library:window(properties)
 		size = properties.Size or properties.size or dim2(0, 500, 0, 650),
 	}
 
-
 	-- window
 	local inline1 = library:create("Frame", {
 		Parent = library.gui,
@@ -1604,7 +1603,7 @@ function library:window(properties)
 		FontFace = library.font,
 		TextColor3 = Color3.fromRGB(180, 180, 180),
 		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		Text = "Priority: Neutral",
+		Text = "Priority: Friendly",
 		BorderSizePixel = 0,
 		BackgroundTransparency = 1,
 		TextXAlignment = Enum.TextXAlignment.Left,
@@ -1658,6 +1657,35 @@ function library:window(properties)
 	button.MouseButton1Click:Connect(function()
 		player_buttons[selected_player.Name].priority.Text = "Neutral"
 		player_buttons[selected_player.Name].priority.TextColor3 = rgb(180, 180, 180)
+	end)
+
+	local button_inline = library:create("Frame", {
+		Parent = Frame,
+		Name = "",
+		Position = UDim2.new(0, -15, 0, 2),
+		BorderColor3 = Color3.fromRGB(19, 19, 19),
+		Size = UDim2.new(1, -26, 0, 16),
+		BorderSizePixel = 0,
+		BackgroundColor3 = Color3.fromRGB(8, 8, 8),
+	})
+
+	local button = library:create("TextButton", {
+		Parent = button_inline,
+		Name = "",
+		FontFace = library.font,
+		TextColor3 = Color3.fromRGB(170, 170, 170),
+		BorderColor3 = Color3.fromRGB(56, 56, 56),
+		Text = "Friendly",
+		TextStrokeTransparency = 0.5,
+		Position = UDim2.new(0, 2, 0, 2),
+		Size = UDim2.new(1, -4, 1, -4),
+		TextSize = 12,
+		BackgroundColor3 = Color3.fromRGB(38, 38, 38),
+	})
+
+	button.MouseButton1Click:Connect(function()
+		player_buttons[selected_player.Name].priority.Text = "Friendly"
+		player_buttons[selected_player.Name].priority.TextColor3 = rgb(15, 179, 255)
 	end)
 
 	local button_inline = library:create("Frame", {
@@ -1895,21 +1923,19 @@ function library:window(properties)
 	end)
 	--
 
-	--
+	function cfg.toggle_list(bool) end
 
 	function cfg.toggle_playerlist(bool)
 		playerlist.Visible = bool
 	end
 
-	function cfg.toggle_list(bool) end
 	function cfg.toggle_watermark(bool) end
 
 	function cfg.set_menu_visibility(bool, pl)
 		WINDOW_PATH.Visible = bool
-		playerlist.Visible = bool
-	end
 
-	library.player_buttons = player_buttons
+		playerlist.Visible = flags["player_list"] and bool or false
+	end
 
 	return setmetatable(cfg, library)
 end
